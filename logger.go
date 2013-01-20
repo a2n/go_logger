@@ -32,14 +32,14 @@ func Warning(msg string) {
     w.Warning(msg)
 }
 
-func Error(msg string) {
+func Err(msg string) {
     w, err := syslog.Dial("", "", syslog.LOG_ERR, "a2n logger ")
     defer w.Close()
     cherr(err)
     w.Err(msg)
 }
 
-func Critical(msg string) {
+func Crit(msg string) {
     w, err := syslog.Dial("", "", syslog.LOG_CRIT, "a2n logger ")
     defer w.Close()
     cherr(err)
