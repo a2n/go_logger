@@ -5,8 +5,8 @@ Usage
 -
 <pre>import "github.com/a2n/go_logger"
 
-logger.Info("foo")
-logger.Alert("foo")
+logger.New("PREFIX ").Info("foo")
+logger.New("PREFIX ").Alert("foo")
 </pre>
 
 Supported Levels
