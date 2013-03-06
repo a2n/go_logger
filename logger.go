@@ -46,10 +46,10 @@ func (l *Logger) Emerg(msg string) {
 
 func (l *Logger) log(text string, priority syslog.Priority) {
     w, err := syslog.New(priority, l.prefix)
+    defer w.Close()
     if err != nil {
 	panic(err)
     }
-    defer w.Close()
 
     switch priority {
 	case syslog.LOG_DEBUG:
