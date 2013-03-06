@@ -4,64 +4,76 @@ import (
     "log/syslog"
 )
 
-func Info(msg string) {
-    w, err := syslog.Dial("", "", syslog.LOG_INFO, "a2n logger ")
-    defer w.Close()
-    cherr(err)
-    w.Info(msg)
+type Logger struct {
+    prefix string
 }
 
-func Debug(msg string) {
-    w, err := syslog.Dial("", "", syslog.LOG_DEBUG, "a2n logger ")
-    defer w.Close()
-    cherr(err)
-    w.Debug(msg)
+func New(prefix string) *Logger {
+    return &Logger {prefix}
 }
 
-func Notice(msg string) {
-    w, err := syslog.Dial("", "", syslog.LOG_NOTICE, "a2n logger ")
-    defer w.Close()
-    cherr(err)
-    w.Notice(msg)
+func (l *Logger) Info(msg string) {
+    l.log(msg, syslog.LOG_INFO)
 }
 
-func Warning(msg string) {
-    w, err := syslog.Dial("", "", syslog.LOG_WARNING, "a2n logger ")
-    defer w.Close()
-    cherr(err)
-    w.Warning(msg)
+func (l *Logger) Debug(msg string) {
+    l.log(msg, syslog.LOG_DEBUG)
 }
 
-func Err(msg string) {
-    w, err := syslog.Dial("", "", syslog.LOG_ERR, "a2n logger ")
-    defer w.Close()
-    cherr(err)
-    w.Err(msg)
+func (l *Logger) Notice(msg string) {
+    l.log(msg, syslog.LOG_NOTICE)
 }
 
-func Crit(msg string) {
-    w, err := syslog.Dial("", "", syslog.LOG_CRIT, "a2n logger ")
-    defer w.Close()
-    cherr(err)
-    w.Crit(msg)
+func (l *Logger) Warning(msg string) {
+    l.log(msg, syslog.LOG_WARNING)
 }
 
-func Alert(msg string) {
-    w, err := syslog.Dial("", "", syslog.LOG_ALERT, "a2n logger ")
-    defer w.Close()
-    cherr(err)
-    w.Alert(msg)
+func (l *Logger) Err(msg string) {
+    l.log(msg, syslog.LOG_ERR)
 }
 
-func Emerg(msg string) {
-    w, err := syslog.Dial("", "", syslog.LOG_EMERG, "a2n logger ")
-    defer w.Close()
-    cherr(err)
-    w.Emerg(msg)
+func (l *Logger) Crit(msg string) {
+    l.log(msg, syslog.LOG_CRIT)
 }
 
-func cherr(err error) {
+func (l *Logger) Alert(msg string) {
+    l.log(msg, syslog.LOG_ALERT)
+}
+
+func (l *Logger) Emerg(msg string) {
+    l.log(msg, syslog.LOG_EMERG)
+}
+
+func (l *Logger) log(text string, priority syslog.Priority) {
+    w, err := syslog.New(priority, l.prefix)
     if err != nil {
 	panic(err)
+    }
+    defer w.Close()
+
+    switch priority {
+	case syslog.LOG_DEBUG:
+	w.Debug(text)
+
+	case syslog.LOG_INFO:
+	w.Info(text)
+
+	case syslog.LOG_NOTICE:
+	w.Notice(text)
+
+	case syslog.LOG_WARNING:
+	w.Warning(text)
+
+	case syslog.LOG_ERR:
+	w.Err(text)
+
+	case syslog.LOG_CRIT:
+	w.Crit(text)
+
+	case syslog.LOG_ALERT:
+	w.Alert(text)
+
+	case syslog.LOG_EMERG:
+	w.Emerg(text)
     }
 }
